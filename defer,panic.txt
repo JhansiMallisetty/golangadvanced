@@ -1,0 +1,193 @@
+1)
+
+package main  
+import (  
+   "fmt"  
+)  
+func main() {  
+   defer print1("Hello")  
+   print2("kloudone")  
+}  
+func  print1(s string)  {  
+   fmt.Println(s)  
+}  
+func print2(s string)  {  
+   fmt.Println(s)  
+}  
+
+kloudone
+Hello
+
+Program exited.
+
+2)
+
+package main 
+  
+import "fmt"
+  
+
+func mul(a1, a2 int) int { 
+  
+    res := a1 * a2 
+    fmt.Println("Result: ", res) 
+    return 0 
+} 
+  
+func show() { 
+    fmt.Println("Hello!, Kloudone") 
+} 
+  
+
+func main() { 
+  
+    
+    mul(20, 40) 
+  
+    
+        defer mul(23, 56) 
+  
+    
+    show() 
+} 
+Result:  800
+Hello!, Kloudone
+Result:  1288
+
+Program exited.
+
+3)
+
+package main 
+  
+import "fmt"
+  
+
+func add(a1, a2 int) int { 
+    res := a1 + a2 
+    fmt.Println("Result: ", res) 
+    return 0 
+} 
+  
+
+func main() { 
+  
+    fmt.Println("Start") 
+  
+    
+    defer fmt.Println("End") 
+    defer add(15, 20) 
+    defer add(10, 10) 
+} 
+
+Start
+Result:  20
+Result:  35
+End
+
+Program exited.
+
+4)
+
+package main 
+  
+import "fmt"
+  
+
+func main() {
+    defer fmt.Println("World")
+    fmt.Println("Hello")
+}
+
+Hello
+World
+
+Program exited.
+
+5)
+package main 
+  
+import "fmt"
+  
+
+func main() {
+    defer fmt.Println("World")
+    panic("Stop")
+    fmt.Println("Hello")
+}
+
+World
+panic: Stop
+
+6)
+
+package main  
+  
+import "os"  
+  
+func main() {  
+    panic("Error Situation")  
+    _, err := os.Open("/tmp/file")  
+    if err != nil {  
+        panic(err)  
+    }  
+}  
+
+panic: Error Situation
+
+goroutine 1 [running]:
+main.main()
+	/tmp/sandbox963279701/prog.go:6 +0x39
+
+Program exited: status 2.
+
+7)
+package main  
+  
+import "fmt"  
+func main() {  
+    fmt.Println("Calling x from main.")  
+    x()  
+    fmt.Println("Returned from x.")  
+}  
+func x() {  
+    defer func() {  
+        if r := recover(); r != nil {  
+            fmt.Println("Recovered in x", r)  
+        }  
+    }()  
+    fmt.Println("Executing x...")  
+    fmt.Println("Calling y.")  
+    y(0)  
+    fmt.Println("Returned normally from y.")  
+}  
+  
+func y(i int) {  
+    fmt.Println("Executing y....")  
+    if i > 2 {  
+        fmt.Println("Panicking!")  
+        panic(fmt.Sprintf("%v" , i))  
+    }  
+    defer fmt.Println("Defer in y", i)  
+    fmt.Println("Printing in y", i)  
+    y(i + 1)  
+}   
+
+Calling x from main.
+Executing x...
+Calling y.
+Executing y....
+Printing in y 0
+Executing y....
+Printing in y 1
+Executing y....
+Printing in y 2
+Executing y....
+Panicking!
+Defer in y 2
+Defer in y 1
+Defer in y 0
+Recovered in x 3
+Returned from x.
+
+Program exited.
